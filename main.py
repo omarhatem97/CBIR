@@ -2,7 +2,6 @@ from FeatureExtractor import *
 from Evaluation import *
 import  os
 
-
 image_path = r'./multi_images' #database images path
 query = r'./multi_images/orange1.jpg' #input query from UI
 
