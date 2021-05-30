@@ -14,13 +14,11 @@ class Evaluation:
         
         height,width = database_image.shape[:2]
         num_of_pixels = width*height
-        self.summation_intersection=0       
-        for (q, d) in zip(hist_queryimage, hist_database_image):
-           
-            self.summation_intersection += min(q, d)
-  
+ 
+        intersection=0
+        intersection = cv2.compareHist(hist_queryimage, hist_database_image, cv2.HISTCMP_INTERSECT)
         
-        self.distance = self.summation_intersection / num_of_pixels
+        self.distance =  intersection / num_of_pixels
         
         return self.distance
         
