@@ -18,15 +18,19 @@ def mean_color(img):
 
 
 
+def compare(img1,img2):
+    x=mean_color(img1)
+    y=mean_color(img2)
+    diff=np.abs(x-y)
+    print(diff)
+
+    
+
 
 
 if __name__ == "__main__":
-  x= mean_color('orange.jpg')
+ # x= mean_color('orange.jpg')
   
-  y=mean_color('orange2.jpg')
-  print(x)
-  print(y)
-
-
-
-
+ # y=mean_color('orange2.jpg')
+ compare('orange.jpg','orange2.jpg')
+ 
