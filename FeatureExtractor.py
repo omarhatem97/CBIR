@@ -8,9 +8,10 @@ class FeatureExtractor:
         self.image=image
     
 
+
     def Histogram(self):
         #Histogram algorithm
-
+        
         image = cv.cvtColor(self.image, cv.COLOR_BGR2HSV )
         image = cv.resize(image,(512,512))
         features = []
@@ -18,7 +19,9 @@ class FeatureExtractor:
         (h, w) = image.shape[:2]
         x,y= (int(w*0.5) , int(h*0.5)) #center
         
-        for row in range(0 ,w , x):
+              
+        
+        for row in range(0,w , x):
             for coloumn in range(0,h , y):
                 
                 window = image[row:row+x,coloumn:coloumn+y]  
@@ -28,6 +31,8 @@ class FeatureExtractor:
                 hist =  cv.normalize(hist,hist).flatten()
                 features.extend(hist)
         return features
+
+    
 
     
     def ColorLayout(self):
