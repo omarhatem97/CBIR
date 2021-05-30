@@ -20,8 +20,8 @@ for imagefile in os.listdir(image_path):
     c, epsilon = a.ColorLayout()  # save features in database
     # print(c)
     e = Evaluation()
-    distance = e.NormalizedDifference(d, c, image)
-
+    distance = e.colorLayoutDifference(d, c, image)
+    print(distance)
     if(distance >= epsilon):
         res.append(imagefile)
     # print(distance)
