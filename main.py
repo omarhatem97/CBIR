@@ -3,7 +3,7 @@ from Evaluation import *
 import os
 
 image_path = r'./multi_images'  # database images path
-query = r'./multi_images/iris1.jpg'  # input query from UI
+query = r'./multi_images/orange1.jpg'  # input query from UI
 
 image2 = cv2.imread(query)
 b = FeatureExtractor(image2)
