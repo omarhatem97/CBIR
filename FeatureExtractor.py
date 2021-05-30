@@ -5,10 +5,10 @@ class FeatureExtractor:
     
     def __init__(self,image):
         self.image=image
-        
- 
-    def ColorHistogram(self):
-        
+    
+    def ColorLayout(self):
+        #color layout algorithm
+        epsilon = 1e-4
         image = cv.cvtColor(self.image, cv.COLOR_BGR2HSV )
         image = cv.resize(image,(512,512))
         features = []
@@ -27,8 +27,7 @@ class FeatureExtractor:
                 hist = cv.calcHist([window], [0,1,2],None,[10,10,4],[0, 180, 0, 256,0,256])  
                 hist =  cv.normalize(hist,hist).flatten()
                 features.extend(hist)
-        return features
-                
+        return features, epsilon
                 
                 
 

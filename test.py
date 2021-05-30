@@ -1,27 +1,27 @@
 from FeatureExtractor import *
-from Evaluation import *
+import cv2 as cv
+from helpers.Evaluation import *
 import os
 
 image_path = r'./multi_images'  # database images path
 query = r'./multi_images/orange1.jpg'  # input query from UI
 
-image2 = cv2.imread(query)
+image2 = cv.imread(query)
 b = FeatureExtractor(image2)
-d = b.ColorHistogram()  # save features in database
+d,epsilon = b.ColorLayout()  # save features in database
 
 res = []
 
 # loop on images for the 1st time to be saved in database
 for imagefile in os.listdir(image_path):
     # print(imagefile)
-    image = cv2.imread(image_path + str('/') + imagefile)  # read image
+    image = cv.imread(image_path + str('/') + imagefile)  # read image
     a = FeatureExtractor(image)
-    c = a.ColorHistogram()  # save features in database
+    c, epsilon = a.ColorLayout()  # save features in database
     # print(c)
     e = Evaluation()
     distance = e.NormalizedDifference(d, c, image)
 
-    epsilon = 1e-4
     if(distance >= epsilon):
         res.append(imagefile)
     # print(distance)
