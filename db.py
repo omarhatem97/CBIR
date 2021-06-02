@@ -3,20 +3,28 @@ import mysql.connector
 
 class DB():
     def __init__(self, database=None):
-        self.database = database
 
+        self.database = database
         #connect to database
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="root"
+            password="root",
+            database = self.database
         )
 
-        # self.cursor = self.db.cursor() #take a cursor
+        self.__cursor = self.db.cursor() #take a cursor
+
+
+    def get_cursor(self):
+        return self.__cursor
 
 
     def createDataBase(self):
-        self.cursor.execute("CREATE DATABASE cbDatabase")
+        '''
+            this function typically will be called once on every pc
+        '''
+        self.cursor.execute("CREATE DATABASE cbDatabase") #creates content based database
 
 
 
