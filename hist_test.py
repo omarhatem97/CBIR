@@ -10,12 +10,13 @@ image2 =  cv2.imread(query)
 a = FeatureExtractor(image2)  
 d = a.Histogram() 
 res = []
-
+c = []
 for imagefile in os.listdir(image_path): #loop on images for the 1st time to be saved in database
     
     image =  cv2.imread(image_path+str('/')+imagefile)     
     a = FeatureExtractor(image)  
     c = a.Histogram()   # save features in database
+    # print(c)
     e = Evaluation()
     distance = e.HistogramNormalizedDifference(d,c , image) 
     if(distance >= 1e-5):
@@ -23,3 +24,4 @@ for imagefile in os.listdir(image_path): #loop on images for the 1st time to be 
     print(imagefile)
     print(distance)
 print(res)
+print(c)
