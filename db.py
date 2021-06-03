@@ -9,10 +9,10 @@ class DB():
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="root",
+            passwd="root",
             database = self.database
         )
-
+        self.db.autocommit = True
         self.__cursor = self.db.cursor() #take a cursor
 
 
