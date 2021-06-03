@@ -7,15 +7,13 @@ def main():
     :return: None
     """
     directory = "./recordings/"
-    recordings = ["football.mp4", "beach.mp4", "bird-walking.mp4", "butterfly.mp4", "recording5.mp4", "recording3.mp4","vid1.mp4","vid2.mp4", "stable-recording5.avi"
-    , "recording7.mp4", "recording8.mp4"]
-    mismatches_directory = "./recordings/mismatches/"
-    mismatches = ["mismatch1.mp4", "mismatch2.mp4"]
-    file1 = recordings[10]
+    recordings = ["recording1.mp4", "recording2.mp4", "recording3.mp4", "recording4.mp4"]
+
+    file1 = recordings[3]
 
     histogram_generator1 = HistogramGenerator(directory, file1)
-    histogram_generator1.generate_and_store_average_rgb_histogram()
-    table_data,video_match = histogram_generator1.match()
+    b,g,r = histogram_generator1.generate_and_store_average_rgb_histogram()
+    table_data,video_match = histogram_generator1.match(b,g,r)
     print("error is :",table_data)
     print("match is :",video_match)
 if __name__ == "__main__":
