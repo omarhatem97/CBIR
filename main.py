@@ -7,9 +7,8 @@ def main():
     :return: None
     """
     directory = "./recordings/"
-    recordings = ["recording1.mp4", "recording2.mp4", "recording3.mp4", "recording4.mp4"]
-
-    file1 = recordings[3]
+    recordings = ["recording1.mp4"]
+    file1 = recordings[0]
 
     histogram_generator1 = HistogramGenerator(directory, file1)
     b,g,r = histogram_generator1.generate_and_store_average_rgb_histogram()
