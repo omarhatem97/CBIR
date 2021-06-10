@@ -37,6 +37,12 @@ class Evaluation:
         return self.distance
         
 
+    def meanColorDifference(self, img1,img2):
+
+        diff=np.abs(img1-img2)
+        error=np.sum(diff)
+        return error
+
         
         
         

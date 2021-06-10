@@ -46,21 +46,27 @@ class FeatureExtractor:
         return features, epsilon
 
     
-    def mean_color(img):
-
-        image_bgr=cv.imread(img,cv.IMREAD_COLOR)
-        #cv.imshow('cv',image_bgr)
-        #cv.waitKey(0) 
-        #cv.destroyAllWindows() 
+    def mean_color(self):
         
-        colors=cv.mean(image_bgr)
-    
+        epsilon = 100
+        image_bgr=self.image  
+        image_bgr=cv.resize(image_bgr,(512,512))
+        colors=cv.mean(image_bgr)    
         observation=np.array([(colors[2],colors[1],colors[0])])
-        print(observation)
-        plt.imshow(observation)
-        plt.show()
-        return observation
-                
+        # print(observation)
+        # plt.imshow(observation)
+        # plt.show()
+        return observation, epsilon
+
+
+    def Dominant_color(self):
+       epsilon = 700
+       a=self.image
+       a=cv.resize(a,(512,512))
+       colors, count = np.unique(a.reshape(-1,a.shape[-1]), axis=0, return_counts=True)
+       #print(colors[count.argmax()])
+    
+       return colors[count.argmax()], epsilon      
                 
 
 
