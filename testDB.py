@@ -19,7 +19,7 @@ database = DB("cbDatabase")
 mycursor = database.get_cursor()
 # mycursor.execute("DROP DATABASE cbDatabase")
 
-# mycursor.execute("DROP TABLE ImagesDB")
+mycursor.execute("DROP TABLE ImagesDB")
 # mycursor.execute("SHOW TABLES")
 
 # for x in mycursor:
@@ -27,32 +27,32 @@ mycursor = database.get_cursor()
 
 
 
-# mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout LONGBLOB ,MeanColor BLOB, Path VARCHAR(256))")
-# # mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout BLOB ,MeanColor BLOB , Path VARCHAR(256))")
+mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout LONGBLOB ,MeanColor BLOB, Path VARCHAR(256))")
+# mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout BLOB ,MeanColor BLOB , Path VARCHAR(256))")
 
-# i = 1
-# for imagefile in natsorted(os.listdir(image_path)): #loop on images for the 1st time to be saved in database
-#     print(imagefile)
-#     image =  cv2.imread(image_path+str('/')+imagefile)     
-#     a = FeatureExtractor(image)  
-#     c = a.ColorLayout()   # save features in database
-#     d = a.Histogram()
-#     e = a.mean_color()
-#     color =pickle.dumps(c)
-#     hist = pickle.dumps(d)
-#     mean = pickle.dumps(e)
-#     #print(type(hist))
-#     # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor, Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
-#     mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
-#     # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,MeanColor,MeanColor2,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,mean,mean2,image_path+str('/')+imagefile))
-#     i=i+1
+i = 1
+for imagefile in natsorted(os.listdir(image_path)): #loop on images for the 1st time to be saved in database
+    print(imagefile)
+    image =  cv2.imread(image_path+str('/')+imagefile)     
+    a = FeatureExtractor(image)  
+    c = a.ColorLayout()   # save features in database
+    d = a.Histogram()
+    e = a.mean_color()
+    color =pickle.dumps(c)
+    hist = pickle.dumps(d)
+    mean = pickle.dumps(e)
+    #print(type(hist))
+    # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor, Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
+    mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
+    # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,MeanColor,MeanColor2,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,mean,mean2,image_path+str('/')+imagefile))
+    i=i+1
     
 ######################################
 image =  cv2.imread(r'./multi_images/31.jpg')     
 a = FeatureExtractor(image)  
-c = a.Histogram() 
+c = a.mean_color() 
 
-mycursor.execute("SELECT Histogram, Path FROM ImagesDB")
+mycursor.execute("SELECT MeanColor, Path FROM ImagesDB")
 
 obj = Evaluation()
 # fetch all the matching rows 
@@ -67,7 +67,8 @@ i=1
 # print(result[0][0])
 for pic in result:
   arr = pickle.loads(pic[0])
-  error = obj.HistogramNormalizedDifference(c,arr,cv2.imread(pic[1]))
+#   print(list(arr[0]))
+  error= obj.meanColorDifference(c,arr)
   print(i)
   # print(error)
   i+=1

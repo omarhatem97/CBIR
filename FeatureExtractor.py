@@ -43,7 +43,7 @@ class FeatureExtractor:
                 hist = cv.calcHist([window], [0,1,2],None,[10,10,4],[0, 180, 0, 256,0,256])  
                 hist =  cv.normalize(hist,hist).flatten()
                 features.extend(hist)
-        return features, epsilon
+        return features
 
     
     def mean_color(self):
@@ -56,7 +56,7 @@ class FeatureExtractor:
         # print(observation)
         # plt.imshow(observation)
         # plt.show()
-        return observation, epsilon
+        return observation
 
 
     def Dominant_color(self):
@@ -66,7 +66,7 @@ class FeatureExtractor:
        colors, count = np.unique(a.reshape(-1,a.shape[-1]), axis=0, return_counts=True)
        #print(colors[count.argmax()])
     
-       return colors[count.argmax()], epsilon      
+       return colors[count.argmax()]     
                 
 
 
