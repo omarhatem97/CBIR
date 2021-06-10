@@ -4,7 +4,7 @@ from helpers.Evaluation import *
 import os
 
 image_path = r'./multi_images'  # database images path
-query = r'./multi_images/orange1.jpg'  # input query from UI
+query = r'./multi_images/31.jpg'  # input query from UI
 
 image2 = cv.imread(query)
 b = FeatureExtractor(image2)
@@ -20,7 +20,7 @@ for imagefile in os.listdir(image_path):
     c, epsilon = a.ColorLayout()  # save features in database
     # print(c)
     e = Evaluation()
-    distance = e.colorLayoutDifference(d, c, image)
+    distance = e.colorLayoutDifference(d, c)
     print(distance)
     if(distance >= epsilon):
         res.append(imagefile)

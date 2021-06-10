@@ -24,13 +24,13 @@ class FeatureExtractor:
     
     def ColorLayout(self):
         #color layout algorithm
-        epsilon = 1e-4
+        epsilon = 1e-5
         image = cv.cvtColor(self.image, cv.COLOR_BGR2HSV )
         image = cv.resize(image,(512,512))
         features = []
         
         (h, w) = image.shape[:2]
-        x,y= (int(w*0.25) , int(h*0.25)) #center
+        x,y= (int(w*0.5) , int(h*0.5)) #center
         
               
         
