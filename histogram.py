@@ -6,7 +6,12 @@ from matplotlib import pyplot as plt
 import numpy as np
 from helpers import get_video_filenames, print_terminal_table
 
-def _normalise_histogram(hist):
+def rel_change(a, b):
+   x = (b - a) / max(a, b) if max(a, b) != 0 else 0
+   return x
+ 
+
+def normalise_histogram(hist):
     """
     Normalise a histogram using OpenCV's "normalize" function.
     :param hist: the histogram to normalise
@@ -16,7 +21,7 @@ def _normalise_histogram(hist):
     return hist
 
 
-def _get_frames_to_process(vc):
+def process_frame(vc):
     """
     Returns the IDs of the frames to calculate a histogram for. 1 Frame Per Second.
     :param vc: the VideoCapture object to process
@@ -29,7 +34,29 @@ def _get_frames_to_process(vc):
         frame_ids.append(i)
     return frame_ids
 
-class HistogramGenerator:
+
+
+class Frame:
+    def __init__(self, id, frame, value):
+        self.id = id
+        self.frame = frame
+        self.value = value
+ 
+    def __lt__(self, other):
+        if self.id == other.id:
+            return self.id < other.id
+        return self.id < other.id
+ 
+    def __gt__(self, other):
+        return other.__lt__(self)
+ 
+    def __eq__(self, other):
+        return self.id == other.id and self.id == other.id
+ 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+class Histogram:
     colours = ('b', 'g', 'r')  # RGB channels
     bins = (8, 12, 3)  # 8 hue bins, 12 saturation bins, 3 value bins
     histcmp_methods = [cv2.HISTCMP_CORREL, cv2.HISTCMP_CHISQR, cv2.HISTCMP_INTERSECT, cv2.HISTCMP_HELLINGER]
@@ -85,21 +112,44 @@ class HistogramGenerator:
         :return: None
         """
 
-        frames_to_process = _get_frames_to_process(self.video_capture)
-        frame_counter = 0  # keep track of current frame ID to know to process it or not
+        frames_to_process = process_frame(self.video_capture)
+        frame_counter = 0   # keep track of current frame ID to know to process it or not
+        curr_frame = None
+        prev_frame = None
+        # frame_diffs = []
+        # frames = []
+        i = 1
+        frames = []
         while self.video_capture.isOpened():
             ret, frame = self.video_capture.read()  # read capture frame by frame
             if ret:
-                frame_counter += 1
-                if frame_counter in frames_to_process:
-                    for i, col in enumerate(self.colours):
-
-                        histogram = cv2.calcHist([frame], [i], None, [256], [0, 256])
-                        self.histograms_rgb_dict[col].append(histogram)
-
+                i = i + 1
+                curr_frame = frame
+                if curr_frame is not None and prev_frame is not None:
+                    diff = cv2.absdiff(curr_frame, prev_frame)
+                    count = np.sum(diff)
+                    frame = Frame(i, frame, count)
+                    frames.append(frame)
+                    frame_counter += 1
+                prev_frame = curr_frame
             else:
                 break
-        self.destroy_video_capture()
+        print(frame_counter)
+        #if frame_counter in  frames_to_process:
+        f = 0
+        dir = './'
+        for k in range(1, len(frames)):
+            if (rel_change(np.float(frames[k - 1].value), np.float(frames[k].value)) >= 0.1 or k == 1 or k == 3 or k == 5):
+                f += 1
+                for j, col in enumerate(self.colours):
+                        histogram = cv2.calcHist([frames[k].frame], [j], None, [256], [0, 256])
+                        self.histograms_rgb_dict[col].append(histogram)
+                        # name = "frame_" + str(frames[k].id) + ".jpg"
+                        # cv2.imwrite(dir  + "/" + name, frames[k].frame)
+        print(f)
+
+
+
 
         avg_histogram = np.zeros(shape=(255, 1))  # array to store average histogram values
         for col, hists in self.histograms_rgb_dict.items():
@@ -110,10 +160,10 @@ class HistogramGenerator:
                     bin_value = hists[arr_index].item(i)
                     bin_sum += bin_value
                 # average all bins values to store in new histogram
-                new_bin_value = bin_sum / len(hists)
+                new_bin_value = bin_sum / len(hists) if len(hists) != 0 else 0
                 avg_histogram[i] = new_bin_value
             # normalise averaged histogram
-            avg_histogram = _normalise_histogram(avg_histogram)
+            avg_histogram = normalise_histogram(avg_histogram)
             
             # if not os.path.exists("./histogram_data/{}/".format(self.file_name)):
             #     os.makedirs("./histogram_data/{}/".format(self.file_name))
@@ -121,8 +171,8 @@ class HistogramGenerator:
             #     file.write("# HSV Histogram shape: {0} [normalised]\n".format(avg_histogram.shape))
             #     for arr_2d in avg_histogram:
             #         file.write("# New slice\n")
-
             #         np.savetxt(file, arr_2d)
+
         #print(avg_histogram)
         b = np.zeros(shape=(255, 1))
         g = np.zeros(shape=(255, 1))
@@ -143,6 +193,7 @@ class HistogramGenerator:
     def match(self,b,g,r):
         video_match = ""
         video_match_value = 0
+        res = []
         method = ""
         csv_field_names = ["video", "score"]
         query_histogram = dict()
@@ -167,7 +218,7 @@ class HistogramGenerator:
                 method = "HELLINGER"
 
         table_data = list()
-        for i, file in enumerate(get_video_filenames("./footage/")):
+        for i, file in enumerate(get_video_filenames("./videos/")):
             comparison = 0
             dbvideo_b_histogram = np.loadtxt("./histogram_data/{}/hist-b.txt".format(file), dtype=np.float32, unpack=False)
             dbvideo_g_histogram = np.loadtxt("./histogram_data/{}/hist-g.txt".format(file), dtype=np.float32, unpack=False)
@@ -181,7 +232,6 @@ class HistogramGenerator:
             # append data to table
             table_data.append([file, round(comparison, 5)])
 
-            # write data to CSV file
             if i == 0:
                 video_match = file
                 video_match_value = comparison
@@ -190,16 +240,21 @@ class HistogramGenerator:
                 if m in [0, 2] and comparison > video_match_value:
                     video_match = file
                     video_match_value = comparison
+
                 # Lower score = better match
                 # (Chi-square, Alternative chi-square, Hellinger and Kullback-Leibler Divergence)
-                elif m in [1, 3, 4, 5] and comparison < video_match_value:
+                elif m in [1, 3] and comparison < video_match_value:
                     video_match = file
                     video_match_value = comparison
+
         for _ in range(0, self.histogram_comparison_weigths['rgb'], 1):
             self.results_array.append(video_match)
         # print("error is :",table_data)
         # print("match is :",video_match)
-        return table_data,video_match
+        for i in table_data:
+            if i[1] < 0.3:
+                res.append(i)
+        return table_data,video_match,res
         
 
 
