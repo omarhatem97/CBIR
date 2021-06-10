@@ -50,7 +50,8 @@ class FeatureExtractor:
     
     def mean_color(self):
 
-        image_bgr=self.image    
+        image_bgr=self.image  
+        image_bgr=cv.resize(image_bgr,(512,512))
         colors=cv.mean(image_bgr)    
         observation=np.array([(colors[2],colors[1],colors[0])])
         # print(observation)
@@ -58,7 +59,7 @@ class FeatureExtractor:
         # plt.show()
         return observation
                 
-    def unique_count_app(self):
+    def Dominant_color(self):
         
        a=self.image
        a=cv.resize(a,(512,512))
@@ -69,13 +70,3 @@ class FeatureExtractor:
 
 
 
-
-    
-   
-        
-
-
-
-    
-   
-        
