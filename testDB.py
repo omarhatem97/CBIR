@@ -1,61 +1,107 @@
-from mysql.connector.utils import intstore
 from db import *
+import os 
+from FeatureExtractor import *
+import pickle
+import cv2
+from helpers.Evaluation import *
+from natsort import natsorted
+
+image_path = r'./multi_images'
+# image_path = r'./multi_images'
+# image_path = r'C:/Users/reemn/Downloads/copydays_original'
 
 
 database = DB("cbDatabase")
 
-cursor = database.cursor
-
-# cursor.execute("CREATE TABLE images(\
-#                     id INT PRIMARY_KEY AUTO_INCREMENT,\
-#                     f_histogram NVARCHAR(1000000000),\
-#                     f_colorLayout NVARCHAR(1000000000),\
-#                     f_meanColor NVARCHAR(1000000000),\
-#                     url VARCHAR(4))")
-
-# cursor.execute("CREATE TABLE images(id INT PRIMARY KEY AUTO_INCREMENT,f_histogram TEXT(1000000),f_colorLayout TEXT(1000000),f_meanColor TEXT(1000000),url VARCHAR(4))") 
-
-database.insert_to_images('f4', 'f5', 'f6', '1')
-
-database.printTable('images')
-
-
-
-
+# database = DB()
 # database.createDataBase()  #call it just once
 
-# cursor = database.get_cursor
+mycursor = database.get_cursor()
+# mycursor.execute("DROP DATABASE cbDatabase")
 
-# create a table
-# database.createTable("test2")
-# database.insert('test2', [1, 2, 3])
-# database.insert('test2', [4, 5, 6])
-# database.insert('test2', [7, 8, 9])
+# mycursor.execute("DROP TABLE ImagesDB")
+# mycursor.execute("SHOW TABLES")
 
-# database.createTable("test4")
-# cursor = database.get_cursor()
-
-# sql = "INSERT INTO test4 (arr) VALUES (%s)"
-# val = ("omar")
-# cursor.execute(sql, val)
-# database.get_db().commit()
-
-
-# sql = "INSERT INTO customers (name, address) VALUES (%s, %s)"
-# val = ("John", "Highway 21")
-
-# mycursor.execute(sql, val)
-
-# mydb.commit()
-
-# print(mycursor.rowcount, "record inserted.")
+# for x in mycursor:
+#   print(x)
 
 
 
-# database.printTable("testArray")
+# mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout LONGBLOB ,MeanColor BLOB, Path VARCHAR(256))")
+# # mycursor.execute("CREATE TABLE ImagesDB (id INT AUTO_INCREMENT PRIMARY KEY, Histogram BLOB, ColorLayout BLOB ,MeanColor BLOB , Path VARCHAR(256))")
+
+# i = 1
+# for imagefile in natsorted(os.listdir(image_path)): #loop on images for the 1st time to be saved in database
+#     print(imagefile)
+#     image =  cv2.imread(image_path+str('/')+imagefile)     
+#     a = FeatureExtractor(image)  
+#     c = a.ColorLayout()   # save features in database
+#     d = a.Histogram()
+#     e = a.mean_color()
+#     color =pickle.dumps(c)
+#     hist = pickle.dumps(d)
+#     mean = pickle.dumps(e)
+#     #print(type(hist))
+#     # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor, Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
+#     mycursor.execute("INSERT INTO ImagesDB (id,Histogram,ColorLayout,MeanColor,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,color,mean,image_path+str('/')+imagefile))
+#     # mycursor.execute("INSERT INTO ImagesDB (id,Histogram,MeanColor,MeanColor2,Path) VALUES(%s,%s,%s,%s,%s)", (i,hist,mean,mean2,image_path+str('/')+imagefile))
+#     i=i+1
+    
+######################################
+image =  cv2.imread(r'./multi_images/31.jpg')     
+a = FeatureExtractor(image)  
+c = a.Histogram() 
+
+mycursor.execute("SELECT Histogram, Path FROM ImagesDB")
+
+obj = Evaluation()
+# fetch all the matching rows 
+result = mycursor.fetchall()
+# print(pickle.loads(result[0][1]))
+# print(bytes(result[0][0],'utf-8'))
+
+# for pin in result:
+#   l = bytes(pin[0][0], 'utf-8')
+#   arr=pickle.loads(l)
+i=1  
+# print(result[0][0])
+for pic in result:
+  arr = pickle.loads(pic[0])
+  error = obj.HistogramNormalizedDifference(c,arr,cv2.imread(pic[1]))
+  print(i)
+  # print(error)
+  i+=1
+  if error >= 4.2e-06:
+    print(pic[1])
+#   error = obj.compare(c,arr)
+#   if error<500:
+#     print(pic[1])
+#   for pickledlist in pic[0][0]:
+#     arr = pickle.loads(pickledlist)
+#     error = obj.compare(c,arr)
+#     if error<100:
+#       print(pic[0][1])  
+
+  
 
 
+#     # hist= " "
+#     # hist.join(c)
+#     # # print(hist)
+#     # sql = "INSERT INTO ImagesDB (id, Histogram) VALUES (%s, %s)"
+#     # val = ( id , hist)
+#     # mycursor.execute(sql, val)
+#     # database.commit()
+#     # i=i+1
 
+# print(mycursor.rowcount, "record inserted.")    
+# mycursor.execute("SHOW TABLES")
 
+# for x in mycursor:
+#   print(x)
 
-
+# mycursor.execute("SELECT * FROM ImagesDB")
+  
+# # fetch all the matching rows 
+# result = mycursor.fetchall()
+# print("rowcount ", mycursor.rowcount)
