@@ -168,9 +168,9 @@ class Histogram:
             # if not os.path.exists("./histogram_data/{}/".format(self.file_name)):
             #     os.makedirs("./histogram_data/{}/".format(self.file_name))
             # with open("./histogram_data/{}/hist-{}.txt".format(self.file_name, col), 'w') as file:
-            #     file.write("# HSV Histogram shape: {0} [normalised]\n".format(avg_histogram.shape))
+            #     #file.write("# HSV Histogram shape: {0} [normalised]\n".format(avg_histogram.shape))
             #     for arr_2d in avg_histogram:
-            #         file.write("# New slice\n")
+            #         #file.write("# New slice\n")
             #         np.savetxt(file, arr_2d)
 
         #print(avg_histogram)
@@ -224,9 +224,9 @@ class Histogram:
             dbvideo_g_histogram = np.loadtxt("./histogram_data/{}/hist-g.txt".format(file), dtype=np.float32, unpack=False)
             dbvideo_r_histogram = np.loadtxt("./histogram_data/{}/hist-r.txt".format(file), dtype=np.float32, unpack=False)
 
-            comparison_b = cv2.compareHist(query_histogram['b'], dbvideo_b_histogram, m)
-            comparison_g = cv2.compareHist(query_histogram['g'], dbvideo_g_histogram, m)
-            comparison_r = cv2.compareHist(query_histogram['r'], dbvideo_r_histogram, m)
+            comparison_b = cv2.compareHist(query_histogram['b'], dbvideo_b_histogram, cv2.HISTCMP_HELLINGER)
+            comparison_g = cv2.compareHist(query_histogram['g'], dbvideo_g_histogram, cv2.HISTCMP_HELLINGER)
+            comparison_r = cv2.compareHist(query_histogram['r'], dbvideo_r_histogram, cv2.HISTCMP_HELLINGER)
             comparison = (comparison_b + comparison_g + comparison_r) / 3
 
             # append data to table
@@ -237,20 +237,20 @@ class Histogram:
                 video_match_value = comparison
             else:
                 # Higher score = better match (Correlation and Intersection)
-                if m in [0, 2] and comparison > video_match_value:
-                    video_match = file
-                    video_match_value = comparison
+                # if m in [0, 2] and comparison > video_match_value:
+                #     video_match = file
+                #     video_match_value = comparison
 
                 # Lower score = better match
                 # (Chi-square, Alternative chi-square, Hellinger and Kullback-Leibler Divergence)
-                elif m in [1, 3] and comparison < video_match_value:
+                #if m in [1, 3] and comparison < video_match_value:
+                if comparison < video_match_value:
                     video_match = file
                     video_match_value = comparison
 
         for _ in range(0, self.histogram_comparison_weigths['rgb'], 1):
             self.results_array.append(video_match)
-        # print("error is :",table_data)
-        # print("match is :",video_match)
+
         for i in table_data:
             if i[1] < 0.3:
                 res.append(i)

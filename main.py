@@ -10,8 +10,8 @@ def main():
     directory = "./test/"
     arr = os.listdir(directory)
     #print(arr)
-    #recordings = ['airplane-window.mp4', 'autumn.mp4', 'beach.mp4', 'bird-walking.mp4', 'butterfly.mp4', 'candles.mp4', 'christmas.mp4', 'cloudy-sky.mp4', 'clown-fish.mp4', 'coffee-machine.mp4', 'cooking.mp4', 'crops-field.mp4', 'dark-city.mp4', 'disco-ball.mp4', 'dunes.mp4', 'dusk-city.mp4', 'earth.mp4', 'eiffel-tower.mp4', 'flower.mp4', 'flowing-river.mp4', 'food-market.mp4', 'gym-workout.mp4', 'ice-hockey.mp4', 'ice_cream.mp4', 'jellyfish.mp4', 'moon.mp4', 'offroad-car.mp4', 'people-dancing.mp4', 'photographer.mp4', 'playing-basketball.mp4', 'police-car.mp4', 'seal.mp4', 'shuttle-landing.mp4', 'sketching.mp4', 'spaghetti.mp4', 'strawberry-slicing.mp4', 'street-artist.mp4', 'surfer.mp4', 'sushi.mp4', 'swimming-pool.mp4', 'swing.mp4', 'timelapse-night.mp4', 'traffic.mp4', 'waves.mp4', 'wind-turbine.mp4', 'winter.mp4', 'work.mp4', 'workers.mp4', 'writing.mp4']
-    # for i in  range(20):
+    # recordings = ['airplane-window.mp4', 'autumn.mp4', 'beach.mp4', 'bird-walking.mp4', 'butterfly.mp4', 'candles.mp4', 'christmas.mp4', 'cloudy-sky.mp4', 'clown-fish.mp4', 'coffee-machine.mp4', 'cooking.mp4', 'crops-field.mp4', 'dark-city.mp4', 'disco-ball.mp4', 'dunes.mp4', 'dusk-city.mp4', 'earth.mp4', 'eiffel-tower.mp4', 'flower.mp4', 'flowing-river.mp4', 'food-market.mp4', 'football.mp4', 'gym-workout.mp4', 'ice-hockey.mp4', 'ice_cream.mp4', 'jellyfish.mp4', 'lecture.mp4', 'moon.mp4', 'offroad-car.mp4', 'people-dancing.mp4', 'photographer.mp4', 'playing-basketball.mp4', 'police-car.mp4', 'seal.mp4', 'shuttle-landing.mp4', 'sketching.mp4', 'spaghetti.mp4', 'strawberry-slicing.mp4', 'street-artist.mp4', 'surfer.mp4', 'sushi.mp4', 'swimming-pool.mp4', 'swing.mp4', 'timelapse-night.mp4', 'traffic.mp4', 'waves.mp4', 'wind-turbine.mp4', 'winter.mp4', 'work.mp4', 'workers.mp4', 'writing.mp4']
+    # for i in  range(51):
     #     file = recordings[i]
     #     histogram_generator1 = Histogram(directory, file)
     #     histogram_generator1.generate_and_store_average_rgb_histogram()
