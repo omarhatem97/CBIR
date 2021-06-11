@@ -35,17 +35,15 @@ mycursor = database.get_cursor()
 
 
 
-recordings = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4']
-own = recordings[0]
-histogram_generator1 = Histogram(dir, own)
-b2,g2,r2 = histogram_generator1.generate_and_store_average_rgb_histogram()
 
-mycursor.execute("SELECT B , G , R , Name , Path FROM VideosDB")
+def test_video(dir,own):
+  histogram_generator = Histogram(dir, own)
+  b2,g2,r2 = histogram_generator.generate_and_store_average_rgb_histogram()
+  mycursor.execute("SELECT B , G , R , Name , Path FROM VideosDB")
+  results = mycursor.fetchall()
+  return results,b2,g2,r2
 
-results = mycursor.fetchall()
-
-
-def video(results,b2,g2,r2):
+def retrieve_video(results,b2,g2,r2):
     video_match = ""
     video_match_value = 0
     table_data = list()
@@ -56,7 +54,7 @@ def video(results,b2,g2,r2):
         arr2= pickle.loads(vid[1])
         arr3 = pickle.loads(vid[2])
         arr4 = vid[3]
-
+        histogram_generator1 = Histogram(dir, own)
         comparison = histogram_generator1.match(b2,g2,r2,arr,arr2,arr3)
         table_data.append([arr4, round(comparison, 5)])
         if i == 0:
@@ -83,7 +81,10 @@ def video(results,b2,g2,r2):
 
 
 if __name__ == "__main__":
-  res , vid = video(results,b2,g2,r2)
+  recordings = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
+  own = recordings[0]
+  results,b2,g2,r2 = test_video(dir,own)
+  res , vid = retrieve_video(results,b2,g2,r2)
   print(res)
   print(vid)
 
