@@ -76,8 +76,9 @@ class Histogram:
         """
         self.directory = directory
         self.file_name = file_name
-
+        
         # start capturing video
+        # self.video_capture = cv2.VideoCapture()
         self.video_capture = cv2.VideoCapture("{}{}".format(self.directory, self.file_name))
         self.check_video_capture()
 
@@ -112,7 +113,7 @@ class Histogram:
         :return: None
         """
 
-        frames_to_process = process_frame(self.video_capture)
+        #frames_to_process = process_frame(self.video_capture)
         frame_counter = 0   # keep track of current frame ID to know to process it or not
         curr_frame = None
         prev_frame = None
@@ -134,19 +135,18 @@ class Histogram:
                 prev_frame = curr_frame
             else:
                 break
-        print(frame_counter)
+        # print(frame_counter)
         #if frame_counter in  frames_to_process:
-        f = 0
+        # f = 0
         dir = './'
         for k in range(1, len(frames)):
             if (rel_change(np.float(frames[k - 1].value), np.float(frames[k].value)) >= 0.1 or k == 1 or k == 3 or k == 5):
-                f += 1
+                # f += 1
                 for j, col in enumerate(self.colours):
                         histogram = cv2.calcHist([frames[k].frame], [j], None, [256], [0, 256])
                         self.histograms_rgb_dict[col].append(histogram)
-                        # name = "frame_" + str(frames[k].id) + ".jpg"
-                        # cv2.imwrite(dir  + "/" + name, frames[k].frame)
-        print(f)
+
+        # print(f)
 
 
 
@@ -164,16 +164,7 @@ class Histogram:
                 avg_histogram[i] = new_bin_value
             # normalise averaged histogram
             avg_histogram = normalise_histogram(avg_histogram)
-            
-            # if not os.path.exists("./histogram_data/{}/".format(self.file_name)):
-            #     os.makedirs("./histogram_data/{}/".format(self.file_name))
-            # with open("./histogram_data/{}/hist-{}.txt".format(self.file_name, col), 'w') as file:
-            #     #file.write("# HSV Histogram shape: {0} [normalised]\n".format(avg_histogram.shape))
-            #     for arr_2d in avg_histogram:
-            #         #file.write("# New slice\n")
-            #         np.savetxt(file, arr_2d)
 
-        #print(avg_histogram)
         b = np.zeros(shape=(255, 1))
         g = np.zeros(shape=(255, 1))
         r = np.zeros(shape=(255, 1))
@@ -190,71 +181,29 @@ class Histogram:
                 
  
   
-    def match(self,b,g,r):
+    def match(self,b1,g1,r1,b,g,r):
         video_match = ""
         video_match_value = 0
         res = []
-        method = ""
-        csv_field_names = ["video", "score"]
         query_histogram = dict()
-        # query_histogram = {
-        #         'b': np.loadtxt("./histogram_data/{}/hist-b.txt".format(self.file_name), dtype=np.float32, unpack=False),
-        #         'g': np.loadtxt("./histogram_data/{}/hist-g.txt".format(self.file_name), dtype=np.float32, unpack=False),
-        #         'r': np.loadtxt("./histogram_data/{}/hist-r.txt".format(self.file_name), dtype=np.float32, unpack=False)
-        #     }
+
         query_histogram = {
                 'b': np.float32(b),
                 'g': np.float32(g),
                 'r': np.float32(r)
             }
-        for m in self.histcmp_methods:
-            if m == 0:
-                method = "CORRELATION"
-            elif m == 1:
-                method = "CHI-SQUARE"
-            elif m == 2:
-                method = "INTERSECTION"
-            elif m == 3:
-                method = "HELLINGER"
+        Base_histogram = {
+                'b1': np.float32(b1),
+                'g1': np.float32(g1),
+                'r1': np.float32(r1)
+            }
+ 
+        comparison_b = cv2.compareHist(query_histogram['b'], Base_histogram['b1'], cv2.HISTCMP_HELLINGER)
+        comparison_g = cv2.compareHist(query_histogram['g'], Base_histogram['g1'], cv2.HISTCMP_HELLINGER)
+        comparison_r = cv2.compareHist(query_histogram['r'], Base_histogram['r1'], cv2.HISTCMP_HELLINGER)
+        comparison = (comparison_b + comparison_g + comparison_r) / 3
 
-        table_data = list()
-        for i, file in enumerate(get_video_filenames("./videos/")):
-            comparison = 0
-            dbvideo_b_histogram = np.loadtxt("./histogram_data/{}/hist-b.txt".format(file), dtype=np.float32, unpack=False)
-            dbvideo_g_histogram = np.loadtxt("./histogram_data/{}/hist-g.txt".format(file), dtype=np.float32, unpack=False)
-            dbvideo_r_histogram = np.loadtxt("./histogram_data/{}/hist-r.txt".format(file), dtype=np.float32, unpack=False)
-
-            comparison_b = cv2.compareHist(query_histogram['b'], dbvideo_b_histogram, cv2.HISTCMP_HELLINGER)
-            comparison_g = cv2.compareHist(query_histogram['g'], dbvideo_g_histogram, cv2.HISTCMP_HELLINGER)
-            comparison_r = cv2.compareHist(query_histogram['r'], dbvideo_r_histogram, cv2.HISTCMP_HELLINGER)
-            comparison = (comparison_b + comparison_g + comparison_r) / 3
-
-            # append data to table
-            table_data.append([file, round(comparison, 5)])
-
-            if i == 0:
-                video_match = file
-                video_match_value = comparison
-            else:
-                # Higher score = better match (Correlation and Intersection)
-                # if m in [0, 2] and comparison > video_match_value:
-                #     video_match = file
-                #     video_match_value = comparison
-
-                # Lower score = better match
-                # (Chi-square, Alternative chi-square, Hellinger and Kullback-Leibler Divergence)
-                #if m in [1, 3] and comparison < video_match_value:
-                if comparison < video_match_value:
-                    video_match = file
-                    video_match_value = comparison
-
-        for _ in range(0, self.histogram_comparison_weigths['rgb'], 1):
-            self.results_array.append(video_match)
-
-        for i in table_data:
-            if i[1] < 0.3:
-                res.append(i)
-        return table_data,video_match,res
+        return comparison
         
 
 
