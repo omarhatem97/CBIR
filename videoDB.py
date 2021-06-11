@@ -35,7 +35,7 @@ mycursor = database.get_cursor()
 
 
 dir = './test/'
-recordings = ['airplane-window.mp4','ear.mp4']
+recordings = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4']
 own = recordings[0]
 histogram_generator1 = Histogram(dir, own)
 b2,g2,r2 = histogram_generator1.generate_and_store_average_rgb_histogram()
