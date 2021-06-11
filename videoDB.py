@@ -9,7 +9,7 @@ from histogram import *
 
 # video_path1 = r'./other/'
 video_path = r'./videos/'
-
+dir = r'./test/'
 # database = DB()
 # database.createDataBase()  #call it just once
 
@@ -34,7 +34,7 @@ mycursor = database.get_cursor()
 #     mycursor.execute("INSERT INTO VideosDB (B,G,R,Name,Path) VALUES(%s,%s,%s,%s,%s)", (b,g,r,file,video_path + file))
 
 
-dir = './test/'
+
 recordings = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4']
 own = recordings[0]
 histogram_generator1 = Histogram(dir, own)
