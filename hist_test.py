@@ -4,7 +4,7 @@ import  os
 
 
 image_path = r'./multi_images' #database images path
-query = r'./multi_images/31.jpg' #input query from UI
+query = r'./multi_images/13.jpg' #input query from UI
 
 image2 =  cv2.imread(query) 
 a = FeatureExtractor(image2)  
