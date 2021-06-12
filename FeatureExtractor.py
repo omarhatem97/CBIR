@@ -1,11 +1,14 @@
 import cv2 as cv
 import numpy as np
 from matplotlib import colors, pyplot as plt
+from Videohistogram import *
+from db import *
+import pickle
 
 
 class FeatureExtractor:
     
-    def __init__(self,image):
+    def __init__(self,image=None):
         self.image=image
     
 
@@ -68,7 +71,22 @@ class FeatureExtractor:
     
        return colors[count.argmax()]     
                 
+    def test_video(self,dir, query_video):
+        """
+        get the value of red,green,blue colors histogram for a test video, and select all green , color , red
+        of another videos from the database.
+        :param dir: directory of the test video
+        :param own: the name of the video mp4 format in the directory 
+        :return: list of selected histograms from the database and the name of the videos, red , blue , green colors for the test video
+        """
+        database = DB("cbDatabase")
 
+        mycursor = database.get_cursor()
+        histogram_generator = Histogram(dir, query_video)
+        b2,g2,r2 = histogram_generator.generate_and_store_average_rgb_histogram()
+        mycursor.execute("SELECT B , G , R , Name , Path FROM VideosDB")
+        results = mycursor.fetchall()
+        return results,b2,g2,r2
 
 
 
