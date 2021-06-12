@@ -385,7 +385,7 @@ class Ui_MainWindow(object):
                 # print(result[0][0])
                 for pic in result:
                     arr = pickle.loads(pic[0])
-                    error = obj.compare(c,arr,cv2.imread(pic[1]))
+                    error = obj.cclsompare(c,arr,cv2.imread(pic[1]))
                     
                     i+=1
                     if error >= 7e-9:
