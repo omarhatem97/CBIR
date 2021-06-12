@@ -7,8 +7,14 @@ import numpy as np
 from helpers import get_video_filenames, print_terminal_table
 
 def rel_change(a, b):
-   x = (b - a) / max(a, b) if max(a, b) != 0 else 0
-   return x
+    """
+    calculate the difference between two frames.
+    :param a: first frame
+    :param a: second frame
+    :return: the difference between two frames
+    """
+    x = (b - a) / max(a, b) if max(a, b) != 0 else 0
+    return x
  
 
 def normalise_histogram(hist):
@@ -21,23 +27,15 @@ def normalise_histogram(hist):
     return hist
 
 
-def process_frame(vc):
-    """
-    Returns the IDs of the frames to calculate a histogram for. 1 Frame Per Second.
-    :param vc: the VideoCapture object to process
-    :return: a list of integers representing the frames to process
-    """
-    frame_ids = list()
-    total_frames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
-    fps = vc.get(cv2.CAP_PROP_FPS)
-    for i in range(1, int(total_frames) + 1, math.ceil(fps)):
-        frame_ids.append(i)
-    return frame_ids
-
-
 
 class Frame:
     def __init__(self, id, frame, value):
+        """
+        Frame to give it features to make key extraction.
+        :param id: id of the key frame
+        :param frame: the frame itself
+        :param value: counter of the frames
+        """
         self.id = id
         self.frame = frame
         self.value = value
@@ -61,7 +59,7 @@ class Histogram:
     bins = (8, 12, 3)  # 8 hue bins, 12 saturation bins, 3 value bins
     histcmp_methods = [cv2.HISTCMP_CORREL, cv2.HISTCMP_CHISQR, cv2.HISTCMP_INTERSECT, cv2.HISTCMP_HELLINGER]
     histcmp_3d_methods = ["earths_mover_distance", "energy_distance"]
-    histogram_comparison_weigths = {  # weights per comparison methods
+    histogram_avg_weigths = {  # weights per avg methods
         'gray': 1,
         'rgb': 5,
         'hsv': 10
@@ -108,9 +106,8 @@ class Histogram:
        
     def generate_and_store_average_rgb_histogram(self):
         """
-        Generates a single RGB histogram by averaging all histograms of a video before normalising it and saving the
-        results to a plain text file.
-        :return: None
+        Generates a single RGB histogram by averaging all histograms of a video.
+        :return: B color, G color , R color
         """
 
         #frames_to_process = process_frame(self.video_capture)
@@ -182,6 +179,16 @@ class Histogram:
  
   
     def match(self,b1,g1,r1,b,g,r):
+        """
+        Match database video with query video by comapring histograms.
+        :param b1: database video blue
+        :param g1: database video green
+        :param r1: database video red
+        :param b: query video blue
+        :param g: query video green
+        :param r: database video red
+        :return: average of red , blue , green colors for the difference
+        """
         video_match = ""
         video_match_value = 0
         res = []
@@ -198,12 +205,12 @@ class Histogram:
                 'r1': np.float32(r1)
             }
  
-        comparison_b = cv2.compareHist(query_histogram['b'], Base_histogram['b1'], cv2.HISTCMP_HELLINGER)
-        comparison_g = cv2.compareHist(query_histogram['g'], Base_histogram['g1'], cv2.HISTCMP_HELLINGER)
-        comparison_r = cv2.compareHist(query_histogram['r'], Base_histogram['r1'], cv2.HISTCMP_HELLINGER)
-        comparison = (comparison_b + comparison_g + comparison_r) / 3
+        avg_b = cv2.compareHist(query_histogram['b'], Base_histogram['b1'], cv2.HISTCMP_HELLINGER)
+        avg_g = cv2.compareHist(query_histogram['g'], Base_histogram['g1'], cv2.HISTCMP_HELLINGER)
+        avg_r = cv2.compareHist(query_histogram['r'], Base_histogram['r1'], cv2.HISTCMP_HELLINGER)
+        avg = (avg_b + avg_g + avg_r) / 3
 
-        return comparison
+        return avg
         
 
 
