@@ -415,7 +415,7 @@ class Ui_MainWindow(object):
                     # print(i)
                     # print(error)
                     i+=1
-                    if error >= 1e-05:
+                    if error >= 1e-06:
                         pixmap = QPixmap(pic[1])
                         icon = QtGui.QIcon(pic[1])
                         self.widget_2.setIconSize(QtCore.QSize(self.widget_2.width(),self.widget_2.height()))
