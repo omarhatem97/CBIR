@@ -20,12 +20,12 @@ mycursor = database.get_cursor()
 
 # mycursor.execute("CREATE TABLE VideosDB (id INT AUTO_INCREMENT PRIMARY KEY, B BLOB, G BLOB , R BLOB , Name VARCHAR(256) , Path VARCHAR(256))")
 
-# i = 0
-# recordings = os.listdir(video_path1)
+# # i = 0
+# recordings = os.listdir(video_path)
 # #print(recordings)
 # for k in range(0,len(recordings)): #loop on videos for the 1st time to be saved in database
 #     file = recordings[k]
-#     histogram_generator1 = Histogram(video_path1,file)
+#     histogram_generator1 = Histogram(video_path,file)
 #     b,g,r = histogram_generator1.generate_and_store_average_rgb_histogram()
 #     b = pickle.dumps(b)
 #     g = pickle.dumps(g)
@@ -90,7 +90,7 @@ def retrieve_video(results,b2,g2,r2):
           res.append(i)
       k = k+1
     if (len(res) == 0):
-      res.append(sorted_res(0))
+      res.append(sorted_res[0])
       
     return res, video_match
 

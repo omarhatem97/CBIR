@@ -4,7 +4,7 @@ import os
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-from helpers import get_video_filenames, print_terminal_table
+
 
 def rel_change(a, b):
     """
@@ -222,13 +222,6 @@ class Histogram:
         if not self.video_capture.isOpened():
             print("Error opening video file")
 
-    def destroy_video_capture(self):
-        """
-        Tidying up the OpenCV environment and the video capture.
-        :return: None
-        """
-        self.video_capture.release()
-        cv2.destroyAllWindows()
 
 
 

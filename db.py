@@ -9,7 +9,7 @@ class DB():
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="root",
+            passwd="omar",
             database = self.database
         )
         self.db.autocommit = True
