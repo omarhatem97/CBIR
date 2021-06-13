@@ -317,6 +317,7 @@ class Ui_MainWindow(object):
         self.pushButton_4.setText(video + ' uploaded succefully!')
         self.pushButton_4.show()
         self.pushButton_4.clicked.connect(self.playvideo)
+        self.pushButton_2.show()
         
     def playvideo(self):
         os.system('C:\\Users\\Lenovo\\Videos\\Captures\\a.mp4')
