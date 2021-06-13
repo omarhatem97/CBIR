@@ -19,7 +19,6 @@ class FeatureExtractor:
         features = 0
         hist = cv.calcHist([image], [0,1,2],None,[10,10,4],[0, 180, 0, 256,0,256])  
         features = cv.normalize(hist,features)
-
         return features
 
     
@@ -34,8 +33,6 @@ class FeatureExtractor:
         
         (h, w) = image.shape[:2]
         x,y= (int(w*0.5) , int(h*0.5)) #center
-        
-              
         
         for row in range(0 ,w , x):
             for coloumn in range(0,h , y):
@@ -71,6 +68,7 @@ class FeatureExtractor:
     
        return colors[count.argmax()]     
                 
+   
     def test_video(self,dir, query_video):
         """
         get the value of red,green,blue colors histogram for a test video, and select all green , color , red

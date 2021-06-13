@@ -447,14 +447,16 @@ class Ui_MainWindow(object):
         if checked.text() == "Video Histogram":
             if checked.isChecked() == True:
                 video_path = r'./videos/'
-                dir = r'./test/'  #to be changed to /video
+                # dir = r'./test/'  #to be changed to /video
+                dir = os.path.dirname(videoname) + '/'
                 # rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
                 # own = rec[5]
 
                 f = FeatureExtractor()
                 e= Evaluation()
                 video = os.path.basename(videoname)
-                print('video', video)
+                print('video path', dir)
+                print('video name', video)
                 results,b2,g2,r2 = f.test_video(dir, video)
                 res , vid = e.retrieve_video(results,b2,g2,r2,video)
                 out = []

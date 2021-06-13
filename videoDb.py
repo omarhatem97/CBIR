@@ -99,9 +99,9 @@ def retrieve_video(results,b2,g2,r2):
 
 
 if __name__ == "__main__":
-  rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
-  own = rec[5]
-
+  rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4', 'cooking.mp4']
+  own = rec[6]
+  print(dir)
   results,b2,g2,r2 = test_video(dir,own)
   res , vid = retrieve_video(results,b2,g2,r2)
   print(res)

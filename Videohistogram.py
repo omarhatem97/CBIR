@@ -74,7 +74,7 @@ class Histogram:
         # start capturing video
         # self.video_capture = cv2.VideoCapture()
         self.video_capture = cv2.VideoCapture("{}{}".format(self.directory, self.file_name))
-        self.check_video_capture()
+        # self.check_video_capture()
 
         # dicts of lists to store histograms for each frame
         self.histograms_grey_dict = list()
@@ -218,13 +218,7 @@ class Histogram:
         if not self.video_capture.isOpened():
             print("Error opening video file")
 
-    def destroy_video_capture(self):
-        """
-        Tidying up the OpenCV environment and the video capture.
-        :return: None
-        """
-        self.video_capture.release()
-        cv2.destroyAllWindows()
+
 
 
 
