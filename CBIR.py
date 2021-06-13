@@ -464,6 +464,7 @@ class Ui_MainWindow(object):
                     out.append(e[0])
                 for word in out:
                     list_item = QtWidgets.QListWidgetItem(word, self.widget_2)
+                    list_item.setForeground(QtGui.QColor('white'))
                 
     #omar
     def item_click(self):
