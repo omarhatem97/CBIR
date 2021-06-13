@@ -424,7 +424,7 @@ class Ui_MainWindow(object):
                         
         if checked.text() == "Dominant Color":
             if checked.isChecked() == True:
-                c = query.unique_count_app()
+                c = query.Dominant_color()
                 
                 mycursor.execute("SELECT MeanColor2, Path FROM ImagesDB")
                 obj = Evaluation()
