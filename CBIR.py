@@ -22,6 +22,7 @@ from PyQt5.QtCore import QSize, Qt
 
 imagepath = ''
 videoname = ''
+clickedItem = ''
 database = DB("cbDatabase")
 
 mycursor = database.get_cursor()
@@ -277,7 +278,7 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Upload Photo"))
         self.pushButton_3.setText(_translate("MainWindow", "Upload Video"))
         self.label_6.setText(_translate("MainWindow", "/"))
-        self.label_2.setText(_translate("MainWindow", "Images Retrieved"))
+        self.label_2.setText(_translate("MainWindow", "Images/Videos Retrieved"))
         self.label.setText(_translate("MainWindow", "Choose Search Method:"))
         self.radioButton_3.setText(_translate("MainWindow", "Mean RGB"))
         self.radioButton.setText(_translate("MainWindow", "Histogram"))
@@ -309,10 +310,11 @@ class Ui_MainWindow(object):
         global videoname
         fname = QFileDialog.getOpenFileName()
         videoname = fname[0]
+        video = os.path.basename(videoname)
         self.pushButton.hide()
         self.label_6.hide()
         self.pushButton_3.hide()
-        self.pushButton_4.setText(videoname)
+        self.pushButton_4.setText(video + ' uploaded succefully!')
         self.pushButton_4.show()
         self.pushButton_4.clicked.connect(self.playvideo)
         
@@ -444,21 +446,29 @@ class Ui_MainWindow(object):
         if checked.text() == "Video Histogram":
             if checked.isChecked() == True:
                 video_path = r'./videos/'
-                dir = r'./test/'
-                rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
-                own = rec[5]
+                dir = r'./test/'  #to be changed to /video
+                # rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
+                # own = rec[5]
 
                 f = FeatureExtractor()
                 e= Evaluation()
-
-                results,b2,g2,r2 = f.test_video(dir, videoname)
-                res , vid = e.retrieve_video(results,b2,g2,r2, videoname)
-                for word in ['cat', 'dog', 'bird']:
+                video = os.path.basename(videoname)
+                print('video', video)
+                results,b2,g2,r2 = f.test_video(dir, video)
+                res , vid = e.retrieve_video(results,b2,g2,r2,video)
+                out = []
+                for e in res:
+                    out.append(e[0])
+                for word in out:
                     list_item = QtWidgets.QListWidgetItem(word, self.widget_2)
                 
     #omar
     def item_click(self):
-        print (self.widget_2.currentItem().text())
+        clickedItem =self.widget_2.currentItem().text()
+        # clickedItem = clickedItem.lower()
+        file = os.path.join(os.path.dirname(__file__)+'\\videos', clickedItem)
+        print(file)
+        os.system(file)
                 
 def suppress_qt_warnings():
         environ["QT_DEVICE_PIXEL_RATIO"] = "0"
