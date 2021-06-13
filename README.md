@@ -28,7 +28,7 @@ It uses one algorithm for video retrieval: Histogram feature extraction.
 
 # System Architecture 
 
-![sys_arch](icon/arch.PNG)
+   ![sys_arch](icon/sys_arch2.png)
 
 
 # User Guide:
