@@ -21,6 +21,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import QSize, Qt
 
 imagepath = ''
+videoname = ''
 database = DB("cbDatabase")
 
 mycursor = database.get_cursor()
@@ -28,6 +29,12 @@ mycursor = database.get_cursor()
 
 # for x in mycursor:
 #   print(x)
+
+class Window2(object):                           # <===
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Window22222")
+        
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -78,6 +85,23 @@ class Ui_MainWindow(object):
         self.pushButton_3.setIcon(icon)
         self.pushButton_3.setIconSize(QtCore.QSize(30, 30))
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.getVideo)
+        
+        
+        self.pushButton_4 = QtWidgets.QPushButton(self.widget)
+        self.pushButton_4.setGeometry(QtCore.QRect(5, 140, 1000, 81))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setStyleSheet("background-color: transparent;\n"
+"color: rgb(233, 236, 239);")
+        
+        self.pushButton_4.setObjectName("pushButton_3")
+        
+        self.pushButton_4.hide()
 
 
         #------------------/---------------
@@ -106,7 +130,7 @@ class Ui_MainWindow(object):
         self.widget_2.setGeometry(QtCore.QRect(20, 440, 1241 , 341))
         self.widget_2.setStyleSheet("background-color: rgb(52, 58, 64);")
         self.widget_2.setObjectName("widget_2")
-        
+        self.widget_2.itemClicked.connect(self.item_click)
         
         self.widget_3 = QtWidgets.QWidget(self.centralwidget)
         self.widget_3.setGeometry(QtCore.QRect(920, 40, 331, 341))
@@ -280,6 +304,27 @@ class Ui_MainWindow(object):
         self.widget.setAlignment(QtCore.Qt.AlignCenter)
         self.widget.setPixmap(pixmap.scaled(self.widget.width(),self.widget.height(),Qt.KeepAspectRatio))
         self.pushButton_2.show()
+    
+    def getVideo(self):
+        global videoname
+        fname = QFileDialog.getOpenFileName()
+        videoname = fname[0]
+        self.pushButton.hide()
+        self.label_6.hide()
+        self.pushButton_3.hide()
+        self.pushButton_4.setText(videoname)
+        self.pushButton_4.show()
+        self.pushButton_4.clicked.connect(self.playvideo)
+        
+    def playvideo(self):
+        os.system('C:\\Users\\Lenovo\\Videos\\Captures\\a.mp4')
+        # os.system(videoname)
+        # vidcap = cv2.VideoCapture(videoname)
+        # success, image = vidcap.read()
+        # if success:
+        #     cv2.imwrite("first_frame.jpg", image)
+            
+
 
     def New(self):
         self.widget.clear()
@@ -298,6 +343,7 @@ class Ui_MainWindow(object):
         self.radioButton_4.setChecked(False)
         self.radioButton_5.setAutoExclusive(False)
         self.radioButton_5.setChecked(False)
+        self.pushButton_4.hide()
 
 
 
@@ -385,7 +431,7 @@ class Ui_MainWindow(object):
                 # print(result[0][0])
                 for pic in result:
                     arr = pickle.loads(pic[0])
-                    error = obj.cclsompare(c,arr,cv2.imread(pic[1]))
+                    error = obj.compare(c,arr,cv2.imread(pic[1]))
                     
                     i+=1
                     if error >= 7e-9:
@@ -397,7 +443,22 @@ class Ui_MainWindow(object):
                 
         if checked.text() == "Video Histogram":
             if checked.isChecked() == True:
-                print("yes  ")
+                video_path = r'./videos/'
+                dir = r'./test/'
+                rec = ['good_fish.MP4','good_ear.mp4','airplane.mp4','bad_dog.MP4','beach.mp4','dog.mp4']
+                own = rec[5]
+
+                f = FeatureExtractor()
+                e= Evaluation()
+
+                results,b2,g2,r2 = f.test_video(dir, videoname)
+                res , vid = e.retrieve_video(results,b2,g2,r2, videoname)
+                for word in ['cat', 'dog', 'bird']:
+                    list_item = QtWidgets.QListWidgetItem(word, self.widget_2)
+                
+    #omar
+    def item_click(self):
+        print (self.widget_2.currentItem().text())
                 
 def suppress_qt_warnings():
         environ["QT_DEVICE_PIXEL_RATIO"] = "0"
